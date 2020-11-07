@@ -26,8 +26,7 @@ MonoBehaviour:
         Int: 0
         Float: 0
         Texture: {fileID: 0}
-        Material: {fileID: 6994558023921701647, guid: 6e8df368f4090124f94f187a43b99b51,
-          type: 3}
+        Material: {fileID: 0}
         Shader: {fileID: 0}
         GameObject: {fileID: 0}
         Vector2: {x: 0, y: 0}

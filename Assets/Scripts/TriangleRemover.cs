@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TriangleRemover : MonoBehaviour
 {
+    public GameObject currentObjectSelected;
     public float sphereRadius;
     public float maxDistance;
     public LayerMask layerMask;
@@ -15,8 +16,11 @@ public class TriangleRemover : MonoBehaviour
 
     void deleteTriangle(int index)
     {
-        Destroy(gameObject.GetComponent<MeshCollider>());
-        Mesh mesh = transform.GetComponent<MeshFilter>().mesh;
+        if (!currentObjectSelected)
+            return;
+
+        Destroy(currentObjectSelected.GetComponent<MeshCollider>());
+        Mesh mesh = currentObjectSelected.transform.GetComponent<MeshFilter>().mesh;
         int[] oldTriangles = mesh.triangles;
         int[] newTriangles = new int[mesh.triangles.Length - 3];
 
@@ -36,9 +40,15 @@ public class TriangleRemover : MonoBehaviour
                 j += 3;
             }
         }
-        transform.GetComponent<MeshFilter>().mesh.triangles = newTriangles;
-        gameObject.AddComponent<MeshCollider>();
+        currentObjectSelected.transform.GetComponent<MeshFilter>().mesh.triangles = newTriangles;
+        currentObjectSelected.AddComponent<MeshCollider>();
+    }
 
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        float distance = currentObjectSelected ? currentHitDistance : maxDistance;
+        Gizmos.DrawWireSphere(origin + direction * distance, sphereRadius);
     }
 
     // Start is called before the first frame update
@@ -55,6 +65,15 @@ public class TriangleRemover : MonoBehaviour
         RaycastHit hit;
 
         if(Physics.SphereCast(origin, sphereRadius, direction, out hit, maxDistance, layerMask, QueryTriggerInteraction.UseGlobal))
+        {
+            currentObjectSelected = hit.transform.gameObject;
+            currentHitDistance = hit.distance;
             deleteTriangle(hit.triangleIndex);
+        }
+        else
+        {
+            currentObjectSelected = null;
+            currentHitDistance = 0;
+        }   
     }
 }
