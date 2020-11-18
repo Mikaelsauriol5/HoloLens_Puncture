@@ -28,7 +28,7 @@ public class ResetPosition : MonoBehaviour
         }
     }
 
-    void ResetPositionHeart()
+    public void ResetPositionHeart()
     {
         heart.transform.position = initPosition;
         heart.transform.rotation = initRotation;
